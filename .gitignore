@@ -1,0 +1,3 @@
+# Liste les éléments à ne pas envoyer sur le repository github
+.env 
+nodes_modules
