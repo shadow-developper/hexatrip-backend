@@ -13,11 +13,12 @@ const tripRoutes = require("./routes/trips.routes"); // Routeur des voyages
 // Constance
 const app = express();
 
-// Configuration
-const port = 3000; // Définition du port d'écoute
-app.use(morgan("dev")); // Utilisation de morgan pour afficher les logs des requêtes HTTP
-app.use(express.urlencoded({ extended: false }));
-app.use(express.json());
+// Configuration :
+const port = 3000;
+app.use(morgan("dev"));
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
+app.use(express.static("public"));
 
 // Connection à la database
 connectToDatabase();
@@ -26,14 +27,14 @@ connectToDatabase();
 app.locals.uploader = multer({
     storage: multer.memoryStorage({}),
     limits: {fileSize: 10 * 1024*1024}, // Taille maximale pour l'imports de fichiers (Photos...), ici de 10 Mo
-    fileFilter: (req, res, cb) => {
+    fileFilter: (req, file, cb) => {
         // Accepte uniquement les images
-        if(file.minetype.startWith("image/")) {
-            cb(mull,true);
-        } else {
+        if (file.mimetype.startsWith("image/")) {
+            cb(null, true);
+         } else {
             cb(new Error("Only images are accepted"));
         }
-    }
+}
 })
 
 // Endpoints

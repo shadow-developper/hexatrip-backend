@@ -1,7 +1,7 @@
 const { StatusCodes } = require("http-status-codes");
 const Adviser = require("../models/Adviser");
 const path = require("path");
-const fs = require("fs");
+const fs = require("fs").promises;
 
 // Endpoints pour le front
 const getAll = async (req, res) => { // Récupération de tous les avis
@@ -76,8 +76,8 @@ const addImage = async (req, res) => {
     try {
         const uploadPath = path.join(__dirname, "../public/images/advisers", id, file.originalname);
         const directory = path.dirname(uploadPath);
-        fs.mkdir(directory, { recursive: true }, () => {});
-        fs.writeFile(uploadPath, file.buffer, () => {});
+        await fs.mkdir(directory, { recursive: true });
+        await fs.writeFile(uploadPath, file.buffer);
         adviser.image = file.originalname;
         await adviser.save();
         return res.status(StatusCodes.CREATED).send("File attached successfully");
@@ -87,4 +87,4 @@ const addImage = async (req, res) => {
     }
 };
 
-module.exports = { create , getAll, getOne}; // Export des fonctions pour pouvoir l'utiliser dans les routes
+module.exports = { create , getAll, getOne, addImage}; // Export des fonctions pour pouvoir l'utiliser dans les routes
