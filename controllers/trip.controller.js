@@ -1,4 +1,4 @@
-const { StatusCodes } = require("http-status-codes");
+const { StatusCodes, NOT_FOUND } = require("http-status-codes");
 const Trip = require("../models/Trip");
 const { categoryCodes, tagCodes } = require("../helpers/data"); // Assure-toi d'avoir tagCodes si tu veux filtrer par tag
 
@@ -127,4 +127,16 @@ const deleteOne = async (req,res) => {
     }
 };
 
-module.exports = { create, getAll, getOne, getAllBestsellers, patchOne, deleteOne };
+const deleteAll = async (req,res) => {
+    try {
+        const result = await Trip.deleteMany();
+        if(result.deletedCount === 0){
+            return res.status(StatusCodes.NOT_FOUND).send("Nothing to delete");
+        }
+        return res.status(StatusCodes.OK).send("All deleted");
+    } catch (error) {
+        console.log(error);
+        return res.status(StatusCodes.INTERNAL_SERVER_ERROR).send("Error while deleting all the trips");
+    }
+}
+module.exports = { create, getAll, getOne, getAllBestsellers, patchOne, deleteOne, deleteAll };
