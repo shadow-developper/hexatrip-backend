@@ -2,6 +2,7 @@ const express = require ("express"); // Framework pour gérer les routes
 const morgan = require("morgan"); // Middleware pour la journalisation des requêtes
 const bodyParser = require("body-parser");
 const connectToDatabase = require("./database"); // Connection à la DB
+const multer = require("multer");
 
 //  Routes 
 const orderRoutes = require("./routes/order.routes"); // Routeur des commandes
@@ -20,6 +21,20 @@ app.use(express.json());
 
 // Connection à la database
 connectToDatabase();
+
+// Configuration multer
+app.locals.uploader = multer({
+    storage: multer.memoryStorage({}),
+    limits: {fileSize: 10 * 1024*1024}, // Taille maximale pour l'imports de fichiers (Photos...), ici de 10 Mo
+    fileFilter: (req, res, cb) => {
+        // Accepte uniquement les images
+        if(file.minetype.startWith("image/")) {
+            cb(mull,true);
+        } else {
+            cb(new Error("Only images are accepted"));
+        }
+    }
+})
 
 // Endpoints
 app.use("/orders", orderRoutes);
