@@ -9,5 +9,6 @@ router.get("/:id", adviserController.getOne);
 
 // Endpoints pour postman
 router.post("/", adviserController.create);
+router.post("/:id", adviserController.addImage);
 
 module.exports = router;
