@@ -175,7 +175,7 @@ const addImages = async (req, res) => {
             const directory = path.dirname(uploadPath);
             await fs.mkdir(directory, { recursive: true });
             await fs.writeFile(uploadPath, file.buffer);
-            trip.images.push() = file.originalname;
+           trip.images.push(file.originalname);
     }))
 
         await trip.save();

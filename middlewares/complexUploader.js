@@ -4,7 +4,7 @@ const { StatusCodes } = require("http-status-codes");
 const multipleFileUploaderMiddleware = (req, res, next) => {
     const uploader = req.app.locals.uploader;
 
-    const multipleFileUploaderMiddleware = uploader.array("images, 10"); //10 Images max
+    const multipleFileUploader = uploader.array("images", 10); // 10 images max
 
     multipleFileUploader(req, res, (error) => {
         if (error instanceof multer.MulterError) {
