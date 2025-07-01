@@ -4,7 +4,7 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
 
-const saltRound = 10; // Puissance du hashage
+const saltRounds = 10; // Puissance du hashage
 
 const register = async (req,res) => {
     try {

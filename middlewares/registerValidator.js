@@ -3,7 +3,7 @@ const { StatusCodes } = require("http-status-codes");
 
 // Register form validation
 const validateRegister = [
-  body("Username")
+  body("username")
     .isAlphanumeric()
     .withMessage("Must be alphanumeric")
     .isLength({ min: 3, max: 30 })
