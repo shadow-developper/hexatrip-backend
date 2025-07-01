@@ -9,6 +9,7 @@ const orderRoutes = require("./routes/order.routes"); // Routeur des commandes
 const adviserRoutes = require("./routes/adviser.routes"); // Routeur des avis
 const agencyRoutes = require("./routes/agency.routes");  // Routeur des agences
 const tripRoutes = require("./routes/trips.routes"); // Routeur des voyages
+const authRoutes = require("./routes/auth.routes");
 
 // Constance
 const app = express();
@@ -42,6 +43,8 @@ app.use("/orders", orderRoutes);
 app.use("/advisers", adviserRoutes);
 app.use("/agencies", agencyRoutes);
 app.use("/trips", tripRoutes);
+app.use("/auth", authRoutes);
+
 
 //  Catch all (Si aucun endpoint est intercepté)
 app.use((req,res) => {
