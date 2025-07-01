@@ -1,6 +1,8 @@
 const { StatusCodes, NOT_FOUND } = require("http-status-codes");
 const Trip = require("../models/Trip");
 const { categoryCodes, tagCodes } = require("../helpers/data"); // Assure-toi d'avoir tagCodes si tu veux filtrer par tag
+const path = require("path");
+const fs = require("fs").promises;
 
 const getAll = async (req, res) => {
     const params = req.query;
@@ -138,5 +140,50 @@ const deleteAll = async (req,res) => {
         console.log(error);
         return res.status(StatusCodes.INTERNAL_SERVER_ERROR).send("Error while deleting all the trips");
     }
-}
-module.exports = { create, getAll, getOne, getAllBestsellers, patchOne, deleteOne, deleteAll };
+};
+
+const addImages = async (req, res) => {
+    const { id } = req.params;
+    const files = req.files;
+
+    // Sortir du controller s'il n'y a pas d'ID
+    if(!id){
+        return res.status(StatusCodes.BAD_REQUEST).send("No ID provided. Faillure");
+    }
+
+    // Trouver l'avis qui correspond
+    let trip;
+    try {
+    trip = await Trip.findById(id);
+    if (!trip) {
+        return res.status().send("No trip found. Failure");
+    }
+    } catch (error) {
+    console.error(error);
+    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).send("Error while fetching agency");
+    }
+    // Si quelque chose ne va pas 
+    if(!files || files.length === 0 || Object.keys(trip).lenght === 0){
+        return res.status(StatusCodes.BAD_REQUEST).send("No upload/trip. Failure");
+    }
+
+    // Sauvegarder l'image dans la node et l'attacher au bon avis dans la database
+    try {
+        await Promise.all(        
+            files.map(async (file) => { 
+            const uploadPath = path.join(__dirname, "../public/images/trips", id, file.originalname);
+            const directory = path.dirname(uploadPath);
+            await fs.mkdir(directory, { recursive: true });
+            await fs.writeFile(uploadPath, file.buffer);
+            trip.images.push() = file.originalname;
+    }))
+
+        await trip.save();
+        return res.status(StatusCodes.CREATED).send("Files attached successfully");
+    } catch (error) {
+        console.log(error);
+        return res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(`Server error : ${error}`);
+    }
+};
+
+module.exports = { create, getAll, getOne, getAllBestsellers, patchOne, deleteOne, deleteAll, addImages };
