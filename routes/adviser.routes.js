@@ -2,7 +2,8 @@
 const express = require("express");
 const router = express.Router();
 const adviserController = require("../controllers/adviser.controller");
-const singleFileUploaderMiddleware = require("../midllewares/simpleUploader");
+const singleFileUploaderMiddleware = require("../middlewares/simpleUploader");
+
 
 // Endpoints pour le front
 router.get("/", adviserController.getAll);

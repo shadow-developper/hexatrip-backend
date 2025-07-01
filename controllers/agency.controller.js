@@ -1,7 +1,7 @@
-// Import des codes HTTP standards (200, 500, etc.)
 const { StatusCodes } = require("http-status-codes");
-// Import du modèle Agency (Agences)
 const Agency = require("../models/Agency");
+const path = require("path");
+const fs = require("fs").promises;
 
 // Endpoints Front
 const getAll = async (req,res) => { // Récupérations de toutes les agences
@@ -36,6 +36,46 @@ const getOne = async (req,res) => { // Recherche d'un avis spécifique
         console.log(error);
         return res.status(StatusCodes.INTERNAL_SERVER_ERROR).send("Error fetching agency");
     }
-}
+};
 
-module.exports = { create, getAll, getOne }; // Export des fonctions pour pouvoir l'utiliser dans les routes
+const addImage = async (req, res) => {
+    const { id } = req.params;
+    const file = req.file;
+
+    // Sortir du controller s'il n'y a pas d'ID
+    if(!id){
+        return res.status(StatusCodes.BAD_REQUEST).send("No ID provided. Faillure");
+    }
+
+    // Trouver l'avis qui correspond
+    let agency;
+    try {
+    agency = await Agency.findById(id);
+    if (!agency) {
+        return res.status().send("No agency found. Failure");
+    }
+    } catch (error) {
+    console.error(error);
+    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).send("Error while fetching agency");
+    }
+    // Si quelque chose ne va pas 
+    if(!file || Object.keys(agency).lenght === 0){
+        return res.status(StatusCodes.BAD_REQUEST).send("No upload. Failure");
+    }
+
+    // Sauvegarder l'image dans la node et l'attacher au bon avis dans la database
+    try {
+        const uploadPath = path.join(__dirname, "../public/images/agencies", id, file.originalname);
+        const directory = path.dirname(uploadPath);
+        await fs.mkdir(directory, { recursive: true });
+        await fs.writeFile(uploadPath, file.buffer);
+        agency.photo = file.originalname;
+        await agency.save();
+        return res.status(StatusCodes.CREATED).send("File attached successfully");
+    } catch (error) {
+        console.log(error);
+        return res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(`Server error : ${error}`);
+    }
+};
+
+module.exports = { create, getAll, getOne, addImage }; // Export des fonctions pour pouvoir l'utiliser dans les routes
