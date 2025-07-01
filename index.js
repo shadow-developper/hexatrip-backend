@@ -3,6 +3,7 @@ const morgan = require("morgan"); // Middleware pour la journalisation des requ�
 const bodyParser = require("body-parser");
 const connectToDatabase = require("./database"); // Connection à la DB
 const multer = require("multer");
+const dotenv = require("dotenv");
 
 //  Routes 
 const orderRoutes = require("./routes/order.routes"); // Routeur des commandes
@@ -20,6 +21,7 @@ app.use(morgan("dev"));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(express.static("public"));
+dotenv.config();
 
 // Connection à la database
 connectToDatabase();
