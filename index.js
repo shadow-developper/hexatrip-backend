@@ -1,11 +1,10 @@
-// Charger les variables d'environnement le plus tôt possible
 require("dotenv").config();
-
 const express = require("express");
 const morgan = require("morgan");
 const bodyParser = require("body-parser");
 const connectToDatabase = require("./database");
 const multer = require("multer");
+const cors = require("cors")
 
 // Routes
 const orderRoutes = require("./routes/order.routes");
@@ -25,6 +24,15 @@ app.use(morgan("dev"));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(express.static("public"));
+
+// Cors configuration 
+const corsOptions = {
+    origin: , //Verifier si l'origine de la requête est authorisée
+    methods: [], // Uniquement les méthodes autorisées
+    allowedHeaders: // Authorise uniquement les requêtes avec certains headers
+    credentiels: // Authorise ou non l'échange de cookies
+}
+app.use(cors(corsOptions));
 
 // Connexion DB
 connectToDatabase();
