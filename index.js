@@ -7,6 +7,7 @@ const multer = require("multer");
 const cors = require("cors");
 const helmet = require("helmet");
 const xssClean = require("xss-clean");
+const rateLimit = require("express-rate-limit");
 
 // Routes
 const orderRoutes = require("./routes/order.routes");
@@ -26,6 +27,18 @@ app.use(bodyParser.json());
 app.use(express.static("public"));
 app.use(helmet()); // Sécurité globale
 app.use(xssClean()); // Supprimer les balises des données entrantes
+
+// Ratelimit configuration :
+const limitOptions = {
+    windowMs: 15* 60 * 1000, // 15 minutes
+    max: 100, // 100 Requêtes max par périodes de 15minutes
+    handler: (req,res) => {
+        res.status(StatusCodes.TOO_MANY_REQUESTS).json({ status: 429, error: "Too many requests"});
+    }, // Trop de reqiêtes 
+    standardHeaders: true, // Inclure dans la réponse des headers la description du ratelimit
+    legacyHeaders: false,
+};
+app.use(rateLimit(limitOptions));
 
 // CORS configuration 
 const allowedOrigins = ["https://hexatrip.netlify.app", "http://localhost:3000"] // REVENIR POUR FIXER L'ADRESSE DU SITE WEB NETLIFY
