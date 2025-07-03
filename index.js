@@ -4,7 +4,8 @@ const morgan = require("morgan");
 const bodyParser = require("body-parser");
 const connectToDatabase = require("./database");
 const multer = require("multer");
-const cors = require("cors")
+const cors = require("cors");
+const helmet = require("helmet");
 
 // Routes
 const orderRoutes = require("./routes/order.routes");
@@ -15,15 +16,14 @@ const authRoutes = require("./routes/auth.routes");
 const profileRoutes = require("./routes/profile.routes");
 const checkoutRoutes = require("./routes/checkout.routes");
 
-// App
+// Configuration :
 const app = express();
 const port = 3000;
-
-// Middlewares
 app.use(morgan("dev"));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(express.static("public"));
+app.unsubscribe(helmet());
 
 // CORS configuration 
 const allowedOrigins = ["https://hexatrip.netlify.app", "http://localhost:3000"] // REVENIR POUR FIXER L'ADRESSE DU SITE WEB NETLIFY
