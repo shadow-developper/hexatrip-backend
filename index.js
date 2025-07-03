@@ -13,6 +13,7 @@ const adviserRoutes = require("./routes/adviser.routes");
 const agencyRoutes = require("./routes/agency.routes");
 const tripRoutes = require("./routes/trips.routes");
 const authRoutes = require("./routes/auth.routes");
+const profileRoutes = require("./routes/profile.routes");
 
 // App
 const app = express();
@@ -46,6 +47,7 @@ app.use("/advisers", adviserRoutes);
 app.use("/agencies", agencyRoutes);
 app.use("/trips", tripRoutes);
 app.use("/auth", authRoutes);
+app.use("/profile", profileRoutes);
 
 // 404
 app.use((req, res) => {
