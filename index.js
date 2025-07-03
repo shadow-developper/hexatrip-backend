@@ -25,13 +25,22 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(express.static("public"));
 
-// Cors configuration 
+// CORS configuration 
+const allowedOrigins = ["https://hexatrip.netlify.app", "http://localhost:3000"] // REVENIR POUR FIXER L'ADRESSE DU SITE WEB NETLIFY
 const corsOptions = {
-    origin: , //Verifier si l'origine de la requête est authorisée
-    methods: [], // Uniquement les méthodes autorisées
-    allowedHeaders: // Authorise uniquement les requêtes avec certains headers
-    credentiels: // Authorise ou non l'échange de cookies
-}
+    origin: function (origin, callback) {
+        if (allowedOrigins.indexOf(origin) !== -1 || !origin) {
+            //Origine acceptées
+            callback(null, true)
+        } else {
+            // Origine non authorisée
+            callback(new Error("Not allowed by CORS"));
+        }
+    }, //Verifier si l'origine de la requête est authorisée
+    methods: ["GET", "POST", "PATCH", "DELETE"], // Uniquement les méthodes autorisées
+    allowedHeaders: ["Content-Type", "Authorization", "x-forwarded-for"], // Authorise uniquement les requêtes avec certains headers
+    credentials: true, // Authorise ou non l'échange de cookies et les headers d'authentification
+};
 app.use(cors(corsOptions));
 
 // Connexion DB
