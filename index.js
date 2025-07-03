@@ -42,7 +42,7 @@ const limitOptions = {
 app.use(rateLimit(limitOptions));
 
 // CORS configuration 
-const allowedOrigins = ["https://hexatrip.netlify.app", "http://localhost:3000"] // REVENIR POUR FIXER L'ADRESSE DU SITE WEB NETLIFY
+const allowedOrigins = ["https://hexatrip.netlify.app", "http://localhost:5173"] // REVENIR POUR FIXER L'ADRESSE DU SITE WEB NETLIFY
 const corsOptions = {
     origin: function (origin, callback) {
         if (allowedOrigins.indexOf(origin) !== -1 || !origin) {
