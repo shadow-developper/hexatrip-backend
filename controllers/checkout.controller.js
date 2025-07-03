@@ -42,11 +42,19 @@ const createStripeSession = async (req,res) => {
                 ? `${process.env.CLIENT_URL_PROD}/checkout` 
                 : `${process.env.CLIENT_URL_LOCAL}/checkout`,
         });
-        
-        // Pendant que le bon de commande est dans la base de données (en mode « non connecté/visiteur » et en mode connecté)
 
+        // Normalement, l'odre doit être placé en base de donnée après la preuve de payement validée par Stripe
+        // Comment le faire via un webhook ici : https://docs.stripe.com/checkout/fulfillment#create-evenet-handler
+        
+        // Écrire l'achat dans la base de donnée (en mode « non connecté/visiteur » et en mode connecté)
+        if(!token.token){
+            await Order.create({...order, email: "guest@guest.com"})
+        } else {
+            await Order.create(order);
+        }
         // Sortir
-    } catch (error) {
+        return res.status(StatusCodes.OK).json({ url : session.url});
+        } catch (error) {
         console.log(error);
         return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: error.message});
     }
