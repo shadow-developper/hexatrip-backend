@@ -8,7 +8,7 @@ const saltRounds = 10; // Puissance du hashage
 
 const register = async (req,res) => {
     try {
-        const { username, email, password} = req.body;
+        const { username, email, password, role} = req.body;
         // On regarde s'il y a des champs manquants
         if(!username ||!email || !password){
             return res.status(StatusCodes.BAD_REQUEST).send("Missing field(s)");
@@ -24,7 +24,8 @@ const register = async (req,res) => {
         const user = {
             username,
             email,
-            password: hashedPassword
+            password: hashedPassword,
+            role,
         };
         await User.create(user);
         return res.status(StatusCodes.CREATED).send("User registred");
