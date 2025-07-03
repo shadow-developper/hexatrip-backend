@@ -1,44 +1,44 @@
-const express = require ("express"); // Framework pour gérer les routes
-const morgan = require("morgan"); // Middleware pour la journalisation des requêtes
-const bodyParser = require("body-parser");
-const connectToDatabase = require("./database"); // Connection à la DB
-const multer = require("multer");
-const dotenv = require("dotenv");
+// Charger les variables d'environnement le plus tôt possible
+require("dotenv").config();
 
-//  Routes 
-const orderRoutes = require("./routes/order.routes"); // Routeur des commandes
-const adviserRoutes = require("./routes/adviser.routes"); // Routeur des avis
-const agencyRoutes = require("./routes/agency.routes");  // Routeur des agences
-const tripRoutes = require("./routes/trips.routes"); // Routeur des voyages
+const express = require("express");
+const morgan = require("morgan");
+const bodyParser = require("body-parser");
+const connectToDatabase = require("./database");
+const multer = require("multer");
+
+// Routes
+const orderRoutes = require("./routes/order.routes");
+const adviserRoutes = require("./routes/adviser.routes");
+const agencyRoutes = require("./routes/agency.routes");
+const tripRoutes = require("./routes/trips.routes");
 const authRoutes = require("./routes/auth.routes");
 
-// Constance
+// App
 const app = express();
-
-// Configuration :
 const port = 3000;
+
+// Middlewares
 app.use(morgan("dev"));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(express.static("public"));
-dotenv.config();
 
-// Connection à la database
+// Connexion DB
 connectToDatabase();
 
-// Configuration multer
+// Configuration Multer
 app.locals.uploader = multer({
     storage: multer.memoryStorage({}),
-    limits: {fileSize: 10 * 1024*1024}, // Taille maximale pour l'imports de fichiers (Photos...), ici de 10 Mo
+    limits: { fileSize: 10 * 1024 * 1024 },
     fileFilter: (req, file, cb) => {
-        // Accepte uniquement les images
         if (file.mimetype.startsWith("image/")) {
             cb(null, true);
-         } else {
+        } else {
             cb(new Error("Only images are accepted"));
         }
-}
-})
+    },
+});
 
 // Endpoints
 app.use("/orders", orderRoutes);
@@ -47,13 +47,12 @@ app.use("/agencies", agencyRoutes);
 app.use("/trips", tripRoutes);
 app.use("/auth", authRoutes);
 
+// 404
+app.use((req, res) => {
+    return res.status(404).send("Page not found");
+});
 
-//  Catch all (Si aucun endpoint est intercepté)
-app.use((req,res) => {
-    return res.status(404).send("Page not fond");
-})
-
-//  Heartbeat
+// Server start
 app.listen(port, () => {
-    console.log(`Hexatrip server running on port ${port}`); // Log lorsque le serveur est en ligne, et écoute sur le port 3000
+    console.log(`Hexatrip server running on port ${port}`);
 });
