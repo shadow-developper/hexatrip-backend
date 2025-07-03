@@ -8,6 +8,7 @@ const cors = require("cors");
 const helmet = require("helmet");
 const xssClean = require("xss-clean");
 const rateLimit = require("express-rate-limit");
+const mongoSanitize= require("express-mongo-sanitize");
 
 // Routes
 const orderRoutes = require("./routes/order.routes");
@@ -27,7 +28,7 @@ app.use(bodyParser.json());
 app.use(express.static("public"));
 app.use(helmet()); // Sécurité globale
 app.use(xssClean()); // Supprimer les balises des données entrantes
-
+app.use(mongoSanitize({ replaceWith: "_" }));
 // Ratelimit configuration :
 const limitOptions = {
     windowMs: 15* 60 * 1000, // 15 minutes
