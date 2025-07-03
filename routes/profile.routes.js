@@ -5,5 +5,6 @@ const { authenticateMiddleware } = require("../middlewares/authenticationMiddlew
 
 // User routes 
 router.get("/", authenticateMiddleware, profileController.getProfile);
+router.patch("/:id", authenticateMiddleware, profileController.updateProfile);
 
 module.exports = router;
