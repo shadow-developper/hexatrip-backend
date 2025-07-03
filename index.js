@@ -6,6 +6,7 @@ const connectToDatabase = require("./database");
 const multer = require("multer");
 const cors = require("cors");
 const helmet = require("helmet");
+const xssClean = require("xss-clean");
 
 // Routes
 const orderRoutes = require("./routes/order.routes");
@@ -24,6 +25,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(express.static("public"));
 app.use(helmet()); // Sécurité globale
+app.use(xssClean()); // Supprimer les balises des données entrantes
 
 // CORS configuration 
 const allowedOrigins = ["https://hexatrip.netlify.app", "http://localhost:3000"] // REVENIR POUR FIXER L'ADRESSE DU SITE WEB NETLIFY
