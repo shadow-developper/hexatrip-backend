@@ -7,8 +7,9 @@ const Order = require("../models/Order");
 // Fonction qui récupère toutes les commandes
 const getAll = async (req, res) => {
     try {
+        const {email} = req.user;
         // Récupère toutes les commandes, et ajoute les infos du trip lié
-        const orders = await Order.find({}).populate("trip");
+        const orders = await Order.find({email}).populate("trip");
 
         // Envoie les commandes au client avec un code 200 (OK)
         return res.status(StatusCodes.OK).send(orders);
