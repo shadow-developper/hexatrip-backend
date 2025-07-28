@@ -1,4 +1,4 @@
-// Import d'Express et création d'un routeur
+// Import d'Express et création du routeur
 const express = require("express");
 const router = express.Router();
 const adviserController = require("../controllers/adviser.controller");
